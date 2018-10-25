@@ -109,7 +109,8 @@ class DlfRunApp(DatalabframeworkApp):
         init_str = dedent("""
             # added by dlf-run
             import datalabframework as dlf
-            dlf.project.Config('{}', '{}', '{}')
+            dlf.project.Config('{0}', '{1}', '{2}')
+            dlf.project.profile('{2}')
             """.format(cwd,fullpath_filename, self.profile))
 
         nc = nbformat.v4.new_code_cell(init_str)
@@ -120,6 +121,13 @@ class DlfRunApp(DatalabframeworkApp):
 
         #print('running {} (cwd={})'.format(fullpath_filename, cwd))
         (nb_out, resources_out) = self.ep.preprocess(nb, resources)
+        out_cells = nb_out.get('cells')
+        for out_cell in out_cells:
+            print('source: {}'.format(out_cell.get('source')))
+            outs = out_cell.get('outputs')
+            for out in outs:
+                print('out: {}'.format(out))
+                
         #print(self.notebook_statistics(nb_out))
 
     def start(self):
